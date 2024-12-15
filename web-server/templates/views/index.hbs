@@ -10,13 +10,21 @@
 
 <body>
     <div class="main-content">
+           {{>navbar}}
         {{>header}}
+
+        
 
         <p>Use this site to get your weather!</p>
 
         <form>
             <input placeholder="Location">
             <button>Search</button>
+            <select name="">
+                <option value="m">Celcius</option>
+                <option value="f">farenheit</option>
+                <option value="s">kelvin</option>
+            </select>
         </form>
 
         <p id="message-1"></p>
