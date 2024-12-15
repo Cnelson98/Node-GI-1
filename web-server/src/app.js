@@ -3,7 +3,7 @@ const express = require("express");
 const hbs = require("hbs");
 const geocode = require("./utils/geocode");
 const forecast = require("./utils/forecast");
-
+const port = process.env.PORT || 3001;
 const app = express();
 
 // Define paths for Express config
@@ -35,13 +35,14 @@ app.get("/about", (req, res) => {
 
 app.get("/help", (req, res) => {
   res.render("help", {
-    helpText: "This is some helpful text.",
+    helpText: "Can we help you?.",
     title: "Help",
     name: "Calvin Nelson",
   });
 });
 
 app.get("/weather", (req, res) => {
+  const { _, units } = req.query;
   if (!req.query.address) {
     return res.send({
       error: "You must provide an address!",
@@ -55,17 +56,22 @@ app.get("/weather", (req, res) => {
         return res.send({ error });
       }
 
-      forecast(latitude, longitude, (error, forecastData) => {
-        if (error) {
-          return res.send({ error });
-        }
+      forecast(
+        latitude,
+        longitude,
+        (error, forecastData) => {
+          if (error) {
+            return res.send({ error });
+          }
 
-        res.send({
-          forecast: forecastData,
-          location,
-          address: req.query.address,
-        });
-      });
+          res.send({
+            forecast: forecastData,
+            location,
+            address: req.query.address,
+          });
+        },
+        units
+      );
     }
   );
 });
@@ -99,6 +105,6 @@ app.get("*", (req, res) => {
   });
 });
 
-app.listen(3001, () => {
+app.listen(port, () => {
   console.log("Server is up on port 3001.");
 });
